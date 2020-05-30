@@ -1,30 +1,32 @@
-    <?php
-include('login_u.php'); 
-
-if(isset($_SESSION['login_user2'])){
-header("location: foodlist.php"); 
+<?php
+session_start();
+require 'connection.php';
+$conn = Connect();
+if(!isset($_SESSION['login_user2'])){
+header("location: customerlogin.php"); 
 }
+
+unset($_SESSION["cart"]);
 ?>
 
-<!DOCTYPE html>
 <html>
 
   <head>
-    <title> Guest Login | Le Cafe' </title>
+    <title> Cart | Le Cafe' </title>
   </head>
 
-  <link rel="stylesheet" type = "text/css" href ="css/managerlogin.css">
+  <link rel="stylesheet" type = "text/css" href ="css/COD.css">
   <link rel="stylesheet" type = "text/css" href ="css/bootstrap.min.css">
   <script type="text/javascript" src="js/jquery.min.js"></script>
   <script type="text/javascript" src="js/bootstrap.min.js"></script>
 
   <body>
 
-
+  
     <button onclick="topFunction()" id="myBtn" title="Go to top">
       <span class="glyphicon glyphicon-chevron-up"></span>
     </button>
-
+  
     <script type="text/javascript">
       window.onscroll = function()
       {
@@ -59,17 +61,54 @@ header("location: foodlist.php");
 
         <div class="collapse navbar-collapse " id="myNavbar">
           <ul class="nav navbar-nav">
-            <li ><a href="index.php">Home</a></li>
+            <li><a href="index.php">Home</a></li>
             <li><a href="aboutus.php">About</a></li>
             <li><a href="contactus.php">Contact Us</a></li>
+
           </ul>
 
+<?php
+if(isset($_SESSION['login_user1'])){
+
+?>
+
+
           <ul class="nav navbar-nav navbar-right">
+            <li><a href="#"><span class="glyphicon glyphicon-user"></span> Welcome <?php echo $_SESSION['login_user1']; ?> </a></li>
+            <li><a href="myrestaurant.php">MANAGER CONTROL PANEL</a></li>
+            <li><a href="logout_m.php"><span class="glyphicon glyphicon-log-out"></span> Log Out </a></li>
+          </ul>
+<?php
+}
+else if (isset($_SESSION['login_user2'])) {
+  ?>
+           <ul class="nav navbar-nav navbar-right">
+            <li><a href="#"><span class="glyphicon glyphicon-user"></span> Welcome <?php echo $_SESSION['login_user2']; ?> </a></li>
+            <li><a href="foodlist.php"><span class="glyphicon glyphicon-cutlery"></span> Food Zone </a></li>
+            <li><a href="cart.php"><span class="glyphicon glyphicon-shopping-cart"></span> Cart
+             (<?php
+              if(isset($_SESSION["cart"])){
+              $count = count($_SESSION["cart"]); 
+              echo "$count"; 
+            }
+              else
+                echo "0";
+              ?>)
+              </a></li>
+            <li><a href="logout_u.php"><span class="glyphicon glyphicon-log-out"></span> Log Out </a></li>
+          </ul>
+  <?php        
+}
+else {
+
+  ?>
+
+<ul class="nav navbar-nav navbar-right">
             <li><a href="#" class="dropdown-toggle active" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-user"></span> Sign Up <span class="caret"></span> </a>
                 <ul class="dropdown-menu">
               <li> <a href="customersignup.php"> User Sign-up</a></li>
               <li> <a href="managersignup.php"> Manager Sign-up</a></li>
-      
+              <li> <a href="#"> Admin Sign-up</a></li>
             </ul>
             </li>
 
@@ -77,73 +116,41 @@ header("location: foodlist.php");
               <ul class="dropdown-menu">
               <li> <a href="customerlogin.php"> User Login</a></li>
               <li> <a href="managerlogin.php"> Manager Login</a></li>
-   
+              <li> <a href="#"> Admin Login</a></li>
             </ul>
             </li>
           </ul>
+
+<?php
+}
+?>
+
+
         </div>
 
       </div>
     </nav>
 
-    <div class="container">
-    <div class="jumbotron">
-     <h1>Hi Guest,<br> Welcome to <span class="edit"> Le Cafe' </span></h1>
-     <br>
-   <p>Kindly LOGIN to continue.</p>
-    </div>
-    </div>
 
-    <div class="container" style="margin-top: 4%; margin-bottom: 2%;">
-      <div class="col-md-5 col-md-offset-4">
-        <label style="margin-left: 5px;color: red;"><span> <?php echo $error;  ?> </span></label>
-      <div class="panel panel-primary">
-        <div class="panel-heading"> Login </div>
-        <div class="panel-body">
-          
-        <form action="" method="POST">
-          
-        <div class="row">
-          <div class="form-group col-xs-12">
-            <label for="username"><span class="text-danger" style="margin-right: 5px;">*</span> Username: </label>
-            <div class="input-group">
-              <input class="form-control" id="username" type="text" name="username" placeholder="Username" required="" autofocus="">
-              <span class="input-group-btn">
-                <label class="btn btn-primary"><span class="glyphicon glyphicon-user" aria-hidden="true"></label>
-            </span>
-              </span>
-            </div>           
+
+        <div class="container">
+          <div class="jumbotron">
+            <h1 class="text-center" style="color: green;"><span class="glyphicon glyphicon-ok-circle"></span> Order Placed Successfully.</h1>
           </div>
         </div>
+        <br>
 
-        <div class="row">
-          <div class="form-group col-xs-12">
-            <label for="password"><span class="text-danger" style="margin-right: 5px;">*</span> Password: </label>
-            <div class="input-group">
-              <input class="form-control" id="password" type="password" name="password" placeholder="Password" required="">
-              <span class="input-group-btn">
-                <label class="btn btn-primary"><span class="glyphicon glyphicon-lock" aria-hidden="true"></span></label>
-            </span>
-              
-            </div>           
-          </div>
-        </div>
+<h2 class="text-center"> Thank you for Ordering at Le Cafe'! The ordering process is now complete.</h2>
 
-        <div class="row">
-          <div class="form-group col-xs-4">
-              <button class="btn btn-primary" name="submit" type="submit" value=" Login ">Submit</button>
-          </div>
+<?php 
+  $num1 = rand(100000,999999); 
+  $num2 = rand(100000,999999); 
+  $num3 = rand(100000,999999);
+  $number = $num1.$num2.$num3;
+?>
 
-        </div>
-        <label style="margin-left: 5px;">or</label> <br>
-       <label style="margin-left: 5px;"><a href="customersignup.php">Create a new account.</a></label>
+<h3 class="text-center"> <strong>Your Order Number:</strong> <span style="color: blue;"><?php echo "$number"; ?></span> </h3>
 
-        </form>
-        </div>     
-      </div>      
-    </div>
-    </div>
+        </body>
 
-
-    </body>
 </html>

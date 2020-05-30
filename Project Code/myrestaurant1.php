@@ -1,17 +1,35 @@
-<html>
+<?php
 
-  <head>
-    <title> Manager Login | Le Cafe' </title>
-  </head>
+include('session_m.php');
 
-  <link rel="stylesheet" type = "text/css" href ="css/manager_registered_success.css">
+if(!isset($login_session)){
+header('Location: managerlogin.php'); 
+}
+
+
+
+$name = $conn->real_escape_string($_POST['name']);
+$email = $conn->real_escape_string($_POST['email']);
+$contact = $conn->real_escape_string($_POST['contact']);
+$address = $conn->real_escape_string($_POST['address']);
+
+
+$query = "INSERT INTO RESTAURANTS(name,email,contact,address,M_ID) VALUES('" . $name . "','" . $email . "','" . $contact . "','" . $address ."','" . $_SESSION['login_user1'] ."')";
+$success = $conn->query($query);
+
+if (!$success){
+	?>
+	<!DOCTYPE html>
+	<html>
+	<head>
+		<title>change</title>
+  <link rel="stylesheet" type = "text/css" href ="css/add_food_items.css">
   <link rel="stylesheet" type = "text/css" href ="css/bootstrap.min.css">
   <script type="text/javascript" src="js/jquery.min.js"></script>
   <script type="text/javascript" src="js/bootstrap.min.js"></script>
-
-  <body>
-
-  
+	</head>
+	<body>
+		
     <button onclick="topFunction()" id="myBtn" title="Go to top">
       <span class="glyphicon glyphicon-chevron-up"></span>
     </button>
@@ -63,38 +81,23 @@
 
       </div>
     </nav>
+    <div class="container">
+	<div class="jumbotron" style="text-align: center;">
+		<h1>Your already have one restaurant.</h1>
+		<p>Go back to your <a href="view_food_items.php">Restaurant</a></p>
+	</div>
+</div>
+	
+	</body>
+	</html>
 
-<?php
-
-require 'connection.php';
-$conn = Connect();
-
-$fullname = $conn->real_escape_string($_POST['fullname']);
-$username = $conn->real_escape_string($_POST['username']);
-$email = $conn->real_escape_string($_POST['email']);
-$contact = $conn->real_escape_string($_POST['contact']);
-$address = $conn->real_escape_string($_POST['address']);
-$password = $conn->real_escape_string($_POST['password']);
-
-$query = "INSERT into MANAGER(fullname,username,email,contact,address,password) VALUES('" . $fullname . "','" . $username . "','" . $email . "','" . $contact . "','" . $address ."','" . $password ."')";
-$success = $conn->query($query);
-
-if (!$success){
-	die("Couldnt enter data: ".$conn->error);
+	<?php
+}
+else {
+	header('Location: myrestaurant.php');
 }
 
 $conn->close();
 
+
 ?>
-
-
-<div class="container">
-	<div class="jumbotron" style="text-align: center;">
-		<h2> <?php echo "Welcome $fullname!" ?> </h2>
-		<h1>Your account has been created.</h1>
-		<p>Login Now from <a href="managerlogin.php">HERE</a></p>
-	</div>
-</div>
-
-    </body>
-</html>
